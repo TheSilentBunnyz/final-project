@@ -1,0 +1,97 @@
+local placeId = 105999690555565 -- Replace with your desired Place ID
+local gameTitle = "SQUID PROJECT" -- Replace with the title of the game
+
+-- Create the teleport screen UI
+local teleportScreen = Instance.new("ScreenGui")
+teleportScreen.IgnoreGuiInset = true
+teleportScreen.ResetOnSpawn = false
+
+local background = Instance.new("Frame", teleportScreen)
+background.Size = UDim2.new(0, 400, 0, 350)
+background.Position = UDim2.new(1, -20, 1, -20)
+background.BackgroundColor3 = Color3.new(0, 0, 0)
+background.BorderSizePixel = 0
+background.AnchorPoint = Vector2.new(1, 1)
+background.ClipsDescendants = true
+
+local titleLabel = Instance.new("TextLabel", background)
+titleLabel.Text = gameTitle
+titleLabel.Font = Enum.Font.GothamBold
+titleLabel.TextColor3 = Color3.new(1, 1, 1)
+titleLabel.TextScaled = true
+titleLabel.Size = UDim2.new(1, 0, 0.2, 0)
+titleLabel.Position = UDim2.new(0, 0, 0, 0)
+titleLabel.BackgroundTransparency = 1
+
+-- Image holder
+local gameImage = Instance.new("ImageLabel", background)
+gameImage.BackgroundTransparency = 0.5
+gameImage.BackgroundColor3 = Color3.fromRGB(100, 100, 100) -- Debug background color
+gameImage.BorderSizePixel = 0
+gameImage.Size = UDim2.new(0.5, 0, 0.4, 0) -- Centered size
+gameImage.Position = UDim2.new(0.5, 0, 0.5, 0) -- Centered position
+gameImage.AnchorPoint = Vector2.new(0.5, 0.5)
+
+-- Image IDs
+local primaryImage = "http://www.roblox.com/asset/?id=108675476227774" -- Invalid image
+local fallbackImage = "http://www.roblox.com/asset/?id=96356739928957" -- Fallback image
+
+-- Function to check and set the image
+local function setImage(imageUrl, fallbackUrl)
+    local success, result = pcall(function()
+        gameImage.Image = imageUrl
+    end)
+    
+    -- If it fails or the image doesn't load, use fallback
+    if not success or gameImage.Image == "" then
+        print("Failed to load primary image. Using fallback.")
+        gameImage.Image = fallbackUrl
+    else
+        print("Primary image loaded successfully.")
+    end
+end
+
+-- Attempt to load the primary image or fallback image
+setImage(primaryImage, fallbackImage)
+
+-- Add the cancel button
+local cancelButton = Instance.new("TextButton", background)
+cancelButton.Size = UDim2.new(0.8, 0, 0.1, 0)
+cancelButton.Position = UDim2.new(0.1, 0, 1, -50)
+cancelButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+cancelButton.Text = "Cancel"
+cancelButton.Font = Enum.Font.GothamBold
+cancelButton.TextColor3 = Color3.new(1, 1, 1)
+cancelButton.TextScaled = true
+cancelButton.BorderSizePixel = 0
+
+local cancelUICorner = Instance.new("UICorner")
+cancelUICorner.CornerRadius = UDim.new(0, 10)
+cancelUICorner.Parent = cancelButton
+
+local teleportButton = Instance.new("TextButton", background)
+teleportButton.Size = UDim2.new(0.8, 0, 0.1, 0)
+teleportButton.Position = UDim2.new(0.1, 0, 1, -100)
+teleportButton.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+teleportButton.Text = "Teleport"
+teleportButton.Font = Enum.Font.GothamBold
+teleportButton.TextColor3 = Color3.new(1, 1, 1)
+teleportButton.TextScaled = true
+teleportButton.BorderSizePixel = 0
+
+local teleportUICorner = Instance.new("UICorner")
+teleportUICorner.CornerRadius = UDim.new(0, 10)
+teleportUICorner.Parent = teleportButton
+
+teleportScreen.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Cancel button functionality
+cancelButton.MouseButton1Click:Connect(function()
+    teleportScreen:Destroy()
+end)
+
+-- Teleport button functionality
+teleportButton.MouseButton1Click:Connect(function()
+    local teleportService = game:GetService("TeleportService")
+    teleportService:Teleport(placeId)
+end)
