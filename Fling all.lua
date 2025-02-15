@@ -48,7 +48,6 @@ local SkidFling = function(TargetPlayer)
     local Accessory
     local Handle
 
-    -- Ensure the target has a humanoid and root part
     if TCharacter:FindFirstChildOfClass("Humanoid") then
         THumanoid = TCharacter:FindFirstChildOfClass("Humanoid")
     end
@@ -58,25 +57,20 @@ local SkidFling = function(TargetPlayer)
     if TCharacter:FindFirstChild("Head") then
         THead = TCharacter.Head
     end
-    
-    -- Safely attempt to find an accessory without causing an error
     if TCharacter:FindFirstChildOfClass("Accessory") then
         Accessory = TCharacter:FindFirstChildOfClass("Accessory")
     end
-    -- Only access the Handle if an accessory exists
-    if Accessory then
-        Handle = Accessory:FindFirstChild("Handle")
+    if Accessoy and Accessory:FindFirstChild("Handle") then
+        Handle = Accessory.Handle
     end
 
-    -- If all required parts are present, proceed with flinging
     if Character and Humanoid and RootPart then
         if RootPart.Velocity.Magnitude < 50 then
             getgenv().OldPos = RootPart.CFrame
         end
         if THumanoid and THumanoid.Sit and not AllBool then
-            return Message("Error Occurred", "Targeting is sitting", 5) -- Optional message for sit state
+            return Message("Error Occurred", "Targeting is sitting", 5) -- u can remove dis part if u want lol
         end
-        -- Update camera subject to either Head or Handle
         if THead then
             workspace.CurrentCamera.CameraSubject = THead
         elseif not THead and Handle then
@@ -84,12 +78,10 @@ local SkidFling = function(TargetPlayer)
         elseif THumanoid and TRootPart then
             workspace.CurrentCamera.CameraSubject = THumanoid
         end
-        -- Ensure the character has a BasePart
         if not TCharacter:FindFirstChildWhichIsA("BasePart") then
             return
         end
         
-        -- Fling position function
         local FPos = function(BasePart, Pos, Ang)
             RootPart.CFrame = CFrame.new(BasePart.Position) * Pos * Ang
             Character:SetPrimaryPartCFrame(CFrame.new(BasePart.Position) * Pos * Ang)
@@ -97,7 +89,6 @@ local SkidFling = function(TargetPlayer)
             RootPart.RotVelocity = Vector3.new(9e8, 9e8, 9e8)
         end
         
-        -- Handle the base part
         local SFBasePart = function(BasePart)
             local TimeToWait = 2
             local Time = tick()
